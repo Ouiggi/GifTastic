@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <!-- <link rel="stylesheet" href="style.css"> -->
+    <title>GifTastic</title>
+</head>
+<div class="container">
+        <h1>gif Search</h1>
+    
+        <!-- This is where the rendered Buttons go -->
+        <div id="buttons-view"></div>
+            <form id="gif-form">
+                <label for="gif-input">Add Gif to List</label>
+                <input type="text" id="gif-input">
+          <br>
+    
+          <!-- this is the add gif button -->
+          <input id="add-gif" type="submit" value="Go for it">
+        </form>
+    
+        <!-- gifs will Get Dumped Here -->
+        <div id="gifs-appear-here"></div>
+    
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script type="text/javascript">
+          // Initial array of gifs
+          var gifs = ["Star Wars", "Rick and Morty", "The Office", "Coding", "Lamborghini", "Doctor Who"];
+
+       
+    
+          // displaygifInfo function re-renders the HTML to display the appropriate content
+          function displaygifInfo() {
+            $("#gifs-appear-here").empty();
+            var gif = $(this).attr("data-name");
+            var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + gif + "&api_key=dc6zaTOxFJmzC&limit=10";
+    
+            // Creating an AJAX call for the specific gif button being clicked
+            $.ajax({
+              url: queryURL,
+              method: "GET"
+            }).then(function(response) {
+                console.log(response);
+                var gifDiv = $("<div id='<gifs-appear-here'>");
+                var results = response.data;
+
+          for (var i = 0; i < results.length; i++) {
+            var gifDiv = $("<div>");
+            var rating = results[i].rating;
+            var p = $("<p>").text("Rating: " + rating);
+            var gifImage = $("<img>");
+            gifImage.attr("src", results[i].images.fixed_height_still.url);
+            gifImage.attr("data-still", results[i].images.fixed_height_still.url);
+            gifImage.attr("data-animate", results[i].images.fixed_height.url);
+            gifImage.attr("data-state", "still")
+            gifImage.addClass("gif");
+            gifDiv.prepend(p);
+            gifDiv.prepend(gifImage);
+            $("#gifs-appear-here").prepend(gifDiv);
+
+            
+          }
+            });
+    
+          }
+    
+          // Function for displaying gif data
+          function renderButtons() {
+            $("#buttons-view").empty();
+    
+    // Looping through the array of gifs and dynamicaly creates buttons for items in array
+            for (var i = 0; i < gifs.length; i++) {
+              var a = $("<button class= 'btn-warning'>");
+              a.addClass("gif-btn");
+              a.attr("data-name", gifs[i]);
+              a.text(gifs[i]);
+              $("#buttons-view").append(a);
+            }
+          }
+    
+    // The function that handles all events when addGif button is clicked
+          $("#add-gif").on("click", function(event) {
+            event.preventDefault();
+            var gif = $("#gif-input").val().trim();
+            gifs.push(gif);
+            renderButtons();
+            $("#gif-input").val("");
+          });
+    
+          $(document).on("click", ".gif-btn", displaygifInfo);
+        
+          renderButtons();
+
+          $(document).on("click", ".gif", toggle); 
+      
+            function toggle() {
+            var state = $(this).attr("data-state");
+            
+      if (state === "still") {
+        var animatedUrl = $(this).attr("data-animate");
+        $(this).attr("src", animatedUrl);
+        $(this).attr("data-state", "animate");
+      } 
+      else if (state === "animate") {
+        var stillUrl = $(this).attr("data-still")
+        $(this).attr("src", stillUrl);
+        $(this).attr("data-state", "still");
+      }
+    };
+        
+
+        
+        </script>
+      </div>
+    </body>
+    
+    </html>
