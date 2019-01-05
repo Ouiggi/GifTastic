@@ -1,0 +1,12 @@
+#gifs-appear-here {
+    float: left;
+}
+
+.container {
+    background-image: url(assets/896.jpg);
+    background-color: blue;
+}
+
+h1 {
+    font-size: 100px;
+}
