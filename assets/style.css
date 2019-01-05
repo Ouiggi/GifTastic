@@ -2,6 +2,18 @@
     float: left;
 }
 
+body {
+    background-image: url(../assets/896.jpg);
+}
+
+p {
+    color: yellow
+}
+
 .container {
-    background-image: url()
+    color: aqua
+}
+
+button {
+    margin-right: 5px;
 }
